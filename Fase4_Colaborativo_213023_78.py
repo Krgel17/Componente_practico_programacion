@@ -67,12 +67,13 @@ class Cliente(EntidadBase):
         self.__email = email
 
     def mostrar_nombre(self):
-        return self._nombre 
-        
-    def mostrar_email(
         return self.__nombre
-     
-    def f"cliente:{self.__nombre} - {self._email}"
+
+    def mostrar_email(self):
+        return self.__email
+
+    def mostrar_info(self):
+        return f"cliente:{self.__nombre} - {self.__email}"
 
 
 

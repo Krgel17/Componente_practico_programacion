@@ -60,14 +60,19 @@ class Cliente(EntidadBase):
         if not nombre:
             raise ErrorDatoInvalido("Nombre vacío")
 
-        if "@" not in email:
+        if "@" not in email or "." not in email:
             raise ErrorDatoInvalido("Email inválido")
 
         self.__nombre = nombre   # encapsulado
         self.__email = email
 
-    def mostrar_info(self):
-        return f"Cliente: {self.__nombre} - {self.__email}"
+    def mostrar_nombre(self):
+        return self._nombre 
+        
+    def mostrar_email(
+        return self.__nombre
+     
+    def f"cliente:{self.__nombre} - {self._email}"
 
 
 

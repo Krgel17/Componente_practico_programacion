@@ -1,18 +1,14 @@
-# =========================
-# IMPORTACIONES
-# =========================
-
 from abc import ABC, abstractmethod
 import datetime
 
 
 # =========================
-# FUNCIÓN PARA GUARDAR LOGS
+# LOGS
 # =========================
 
 def registrar_log(mensaje):
 
-    with open("logs.txt", "a") as archivo:
+    with open("logs.txt", "a", encoding="utf-8") as archivo:
         fecha = datetime.datetime.now()
         archivo.write(f"{fecha} - {mensaje}\n")
 
@@ -30,7 +26,7 @@ class ErrorDatoInvalido(ErrorSistema):
 
 
 # =========================
-# CLASE ABSTRACTA BASE
+# CLASE ABSTRACTA
 # =========================
 
 class EntidadBase(ABC):
@@ -44,7 +40,7 @@ class EntidadBase(ABC):
 
 
 # =========================
-# CLASE CLIENTE
+# CLIENTE
 # =========================
 
 class Cliente(EntidadBase):
@@ -53,8 +49,7 @@ class Cliente(EntidadBase):
 
         super().__init__(id)
 
-        # Validaciones
-        if not nombre.strip():
+        if nombre.strip() == "":
             raise ErrorDatoInvalido("Nombre vacío")
 
         if "@" not in email:
@@ -69,7 +64,7 @@ class Cliente(EntidadBase):
 
 
 # =========================
-# CLASE ABSTRACTA SERVICIO
+# SERVICIO ABSTRACTO
 # =========================
 
 class Servicio(ABC):
@@ -130,7 +125,7 @@ class Asesoria(Servicio):
 
 
 # =========================
-# CLASE RESERVA
+# RESERVA
 # =========================
 
 class Reserva:
@@ -138,7 +133,7 @@ class Reserva:
     def __init__(self, cliente, servicio, horas):
 
         if horas <= 0:
-            raise ErrorDatoInvalido("Las horas deben ser mayores a 0")
+            raise ErrorDatoInvalido("Horas inválidas")
 
         self.cliente = cliente
         self.servicio = servicio
@@ -154,105 +149,96 @@ class Reserva:
     def procesar(self):
 
         try:
+
             costo = self.servicio.calcular_costo(self.horas)
+            return costo
 
         except Exception as e:
 
             registrar_log(str(e))
-            print("Ocurrió un error")
-
-        else:
-
-            return costo
-
-        finally:
-
-            registrar_log("Proceso terminado")
+            print("Error al procesar la reserva")
 
 
 # =========================
 # PROGRAMA PRINCIPAL
 # =========================
 
-if __name__ == "__main__":
+print("===== SISTEMA SOFTWARE FJ =====\n")
 
-    print("===== SISTEMA SOFTWARE FJ =====\n")
+clientes = []
+reservas = []
 
-    clientes = []
-    reservas = []
+try:
 
+    # Cliente válido
+    c1 = Cliente(1, "Juan", "juan@gmail.com")
+    clientes.append(c1)
+
+    print(c1.mostrar_info())
+
+    # Cliente inválido
     try:
 
-        # Cliente válido
-        c1 = Cliente(1, "Juan", "juan@gmail.com")
-        clientes.append(c1)
+        c2 = Cliente(2, "", "correo malo")
 
-        print(c1.mostrar_info())
+    except ErrorSistema as e:
 
-        # Cliente inválido
-        try:
+        print("Error cliente:", e)
+        registrar_log(str(e))
 
-            c2 = Cliente(2, "", "correo malo")
+    # Servicios
+    s1 = ReservaSala("Sala 1")
+    s2 = AlquilerEquipo("Proyector")
+    s3 = Asesoria("Consultoría")
 
-        except ErrorSistema as e:
+    print("\nServicios disponibles:")
 
-            print("Error cliente:", e)
+    servicios = [s1, s2, s3]
 
-            registrar_log(str(e))
+    for s in servicios:
+        print("-", s.descripcion())
 
-        # Servicios
-        s1 = ReservaSala("Sala 1")
-        s2 = AlquilerEquipo("Proyector")
-        s3 = Asesoria("Consultoría")
+    # Reserva válida
+    r1 = Reserva(c1, s1, 2)
 
-        print("\nServicios disponibles:")
+    r1.confirmar()
 
-        servicios = [s1, s2, s3]
+    print("\nCosto reserva sala:", r1.procesar())
 
-        for s in servicios:
-            print("-", s.descripcion())
+    reservas.append(r1)
 
-        # Reserva válida
-        r1 = Reserva(c1, s1, 2)
+    # Reserva inválida
+    try:
 
-        r1.confirmar()
+        r2 = Reserva(c1, s2, -5)
 
-        print("\nCosto reserva sala:", r1.procesar())
+    except ErrorSistema as e:
 
-        reservas.append(r1)
+        print("Error reserva:", e)
 
-        # Reserva inválida
-        try:
+        registrar_log(str(e))
 
-            r2 = Reserva(c1, s2, -5)
+    # Otra reserva válida
+    r3 = Reserva(c1, s3, 1)
 
-        except ErrorSistema as e:
+    r3.confirmar()
 
-            print("Error reserva:", e)
+    print("Costo asesoría:", r3.procesar())
 
-            registrar_log(str(e))
+    reservas.append(r3)
 
-        # Otra reserva válida
-        r3 = Reserva(c1, s3, 1)
+    # Cancelar reserva
+    r3.cancelar()
 
-        r3.confirmar()
+except Exception as e:
 
-        print("Costo asesoría:", r3.procesar())
+    registrar_log("Error crítico: " + str(e))
 
-        reservas.append(r3)
+finally:
 
-        # Cancelar reserva
-        r3.cancelar()
+    print("\n===== ESTADO DE RESERVAS =====")
 
-    except Exception as e:
+    for r in reservas:
+        print(r.cliente.mostrar_info(), "| Estado:", r.estado)
 
-        registrar_log("Error crítico: " + str(e))
-
-    finally:
-
-        print("\n===== ESTADO DE RESERVAS =====")
-
-        for r in reservas:
-            print(r.cliente.mostrar_info(), "| Estado:", r.estado)
-
-        print("\nEl sistema sigue funcionando correctamente.")
+    print("\nEl sistema sigue funcionando correctamente.")

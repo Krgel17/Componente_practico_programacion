@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 import datetime
 
 
-# =========================
+# ========================
 # LOGS
-# =========================
+# ========================
 
 def registrar_log(mensaje):
 

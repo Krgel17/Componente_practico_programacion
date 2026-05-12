@@ -1,3 +1,16 @@
+"""
+Componente práctico programación
+
+Elkin Dario Gelis Blanco
+Jorge Mario Huertas Romero
+Kevin Daniel Argel Bautista
+Leonardo José Ruidiaz Oliveros
+Wesmy Jey Chaves Gutiérrez
+
+Universidad Nacional Abierta y a Distancia - UNAD
+12/05/2026
+"""
+
 import tkinter as tk
 from tkinter import ttk, messagebox
 from abc import ABC, abstractmethod
@@ -114,7 +127,6 @@ class Sala(Servicio):
             descuento
         )
 
-
 class Equipo(Servicio):
 
     def calcular(
@@ -151,7 +163,6 @@ class Asesoria(Servicio):
             impuesto,
             descuento
         )
-
 
 class Reserva:
 
@@ -229,7 +240,7 @@ class Reserva:
 clientes_temporales = []
 
 
-# INTERFAZ
+# INTERFAZ GRAFICA
 class App:
 
     def __init__(self, root):
@@ -509,9 +520,7 @@ class App:
         for i in range(4):
             formulario.columnconfigure(i, weight=1)
 
-        # =========================
         # CLIENTES
-        # =========================
 
         ttk.Label(
             formulario,
@@ -582,10 +591,7 @@ class App:
             pady=10
         )
 
-        # =========================
         # RESERVAS
-        # =========================
-
         ttk.Label(
             formulario,
             text="Seleccionar Cliente"
@@ -1017,7 +1023,6 @@ class App:
             .replace("X", ".")
         )
 
-
     # CLIENTES
     def actualizar_lista_clientes(self):
 
@@ -1182,7 +1187,6 @@ class App:
                     self.formatear_moneda(total)
                 )
             )
-
 
             self.duracion.delete(0, tk.END)
             self.costo.delete(0, tk.END)
